@@ -55,7 +55,7 @@ const CONFIG = {
       artist_name: "Lonely Piano",
       album_name: "Quiet Solitude",
       duration: 141,
-      image: "https://images.unsplash.com/photo-1520523839898-507127053037?w=300&auto=format&fit=crop&q=80",
+      image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=300&auto=format&fit=crop&q=80",
       audio: "https://mp3d.jamendo.com/download/track/1884491/mp32/"
     },
     {

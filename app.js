@@ -71,8 +71,8 @@
       const savedPlaylist = localStorage.getItem(STORAGE_KEYS.PLAYLIST);
       if (savedPlaylist) {
         state.playlist = JSON.parse(savedPlaylist);
-        // If saved playlist had old demo tracks, refresh to verified Jamendo tracks
-        if (state.playlist.some(t => t.id && String(t.id).startsWith('demo-'))) {
+        // If saved playlist had old demo tracks or broken image URLs, refresh to verified Jamendo tracks
+        if (state.playlist.some(t => t.id && (String(t.id).startsWith('demo-') || (t.image && t.image.includes('1520523839898'))))) {
           state.playlist = [...CONFIG.FALLBACK_TRACKS];
           savePlaylistToStorage();
         }
@@ -271,13 +271,6 @@
      ========================================================================== */
 
   const Player = {
-    audioCtx: null,
-    analyser: null,
-    sourceNode: null,
-    dataArray: null,
-    analyserInitialized: false,
-    bassAnimFrameId: null,
-
     init() {
       const audio = state.audioElement;
       audio.preload = 'metadata';
@@ -286,14 +279,11 @@
       audio.addEventListener('play', () => {
         state.isPlaying = true;
         UI.syncPlayState(true);
-        this.resumeAudioContext();
-        this.startBassLoop();
       });
 
       audio.addEventListener('pause', () => {
         state.isPlaying = false;
         UI.syncPlayState(false);
-        this.stopBassLoop();
       });
 
       audio.addEventListener('loadedmetadata', () => {
@@ -325,86 +315,8 @@
         console.error('Audio playback error:', e);
         state.isPlaying = false;
         UI.syncPlayState(false);
-        this.stopBassLoop();
         UI.showToast('Unable to stream this audio track.', '⚠️');
       });
-    },
-
-    setupAudioAnalyser() {
-      if (this.analyserInitialized) return;
-      try {
-        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContextClass) return;
-
-        this.audioCtx = new AudioContextClass();
-        this.analyser = this.audioCtx.createAnalyser();
-        this.analyser.fftSize = 64;
-        this.analyser.smoothingTimeConstant = 0.8;
-
-        state.audioElement.crossOrigin = 'anonymous';
-        this.sourceNode = this.audioCtx.createMediaElementSource(state.audioElement);
-        this.sourceNode.connect(this.analyser);
-        this.analyser.connect(this.audioCtx.destination);
-
-        this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
-        this.analyserInitialized = true;
-      } catch (err) {
-        // Fall back cleanly to steady CSS neon pulse if CORS prevents MediaElementSource
-        console.info('Audio Analyser fallback active (steady CSS pulse):', err.message);
-        this.analyser = null;
-        this.analyserInitialized = true;
-      }
-    },
-
-    resumeAudioContext() {
-      this.setupAudioAnalyser();
-      if (this.audioCtx && this.audioCtx.state === 'suspended') {
-        this.audioCtx.resume().catch(() => {});
-      }
-    },
-
-    startBassLoop() {
-      if (this.bassAnimFrameId) cancelAnimationFrame(this.bassAnimFrameId);
-
-      const updateBass = () => {
-        if (state.isPlaying && this.analyser && this.dataArray) {
-          try {
-            this.analyser.getByteFrequencyData(this.dataArray);
-            let bassSum = 0;
-            const count = Math.min(6, this.dataArray.length);
-            for (let i = 0; i < count; i++) {
-              bassSum += this.dataArray[i];
-            }
-            const bassRatio = (bassSum / count) / 255;
-
-            const scale = 1 + bassRatio * 0.12;
-            const glow = 1 + bassRatio * 0.65;
-
-            if (DOM.vinylWidget) {
-              DOM.vinylWidget.style.setProperty('--bass-scale', scale.toFixed(3));
-              DOM.vinylWidget.style.setProperty('--bass-glow', glow.toFixed(3));
-            }
-          } catch (e) {}
-          this.bassAnimFrameId = requestAnimationFrame(updateBass);
-        } else if (!state.isPlaying) {
-          this.stopBassLoop();
-        } else {
-          this.bassAnimFrameId = requestAnimationFrame(updateBass);
-        }
-      };
-
-      this.bassAnimFrameId = requestAnimationFrame(updateBass);
-    },
-
-    stopBassLoop() {
-      if (this.bassAnimFrameId) {
-        cancelAnimationFrame(this.bassAnimFrameId);
-        this.bassAnimFrameId = null;
-      }
-      if (DOM.vinylWidget) {
-        DOM.vinylWidget.style.setProperty('--bass-scale', '1');
-        DOM.vinylWidget.style.setProperty('--bass-glow', '1');
-      }
     },
 
     playTrack(track) {
@@ -412,8 +324,6 @@
         UI.showToast('This track does not have a streamable audio URL.', '⚠️');
         return;
       }
-
-      this.resumeAudioContext();
 
       // Check if it's already the current track
       if (state.currentTrack && state.currentTrack.id === track.id) {
@@ -440,7 +350,6 @@
           console.warn('Playback prevented by browser autoplay policy:', err);
           state.isPlaying = false;
           UI.syncPlayState(false);
-          this.stopBassLoop();
         });
       }
 
@@ -451,9 +360,7 @@
     },
 
     resume() {
-      this.resumeAudioContext();
       if (!state.currentTrack) {
-        // If no track selected, play first track from playlist or search results
         if (state.playlist.length > 0) {
           this.playTrack(state.playlist[0]);
         } else if (state.searchResults.length > 0) {
@@ -466,7 +373,6 @@
 
     pause() {
       state.audioElement.pause();
-      this.stopBassLoop();
     },
 
     togglePlayPause() {
@@ -635,7 +541,7 @@
       state.playlist.push(track);
       savePlaylistToStorage();
       UI.renderPlaylist();
-      UI.showToast(`Added "${track.name}" to playlist`, '⚜️');
+      UI.showToast(`Added "${track.name}" to playlist`, '✓');
     },
 
     remove(trackId) {
@@ -1025,7 +931,10 @@
 
     renderNowPlaying(track) {
       if (!track) return;
-      DOM.nowPlayingCover.src = track.image;
+      DOM.nowPlayingCover.src = track.image || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&auto=format&fit=crop&q=80';
+      DOM.nowPlayingCover.onerror = () => {
+        DOM.nowPlayingCover.src = 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&auto=format&fit=crop&q=80';
+      };
       DOM.nowPlayingTitle.textContent = track.name;
       DOM.nowPlayingTitle.title = track.name;
       DOM.nowPlayingArtist.textContent = track.artist_name;
@@ -1056,7 +965,10 @@
 
     updateVinylCover(track) {
       if (!track) return;
-      DOM.vinylCover.src = track.image;
+      DOM.vinylCover.src = track.image || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&auto=format&fit=crop&q=80';
+      DOM.vinylCover.onerror = () => {
+        DOM.vinylCover.src = 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&auto=format&fit=crop&q=80';
+      };
     },
 
     syncPlayState(isPlaying) {
@@ -1134,7 +1046,7 @@
     updateVolumeUI() {
       DOM.volumeSlider.value = state.volume;
       const pct = state.volume * 100;
-      DOM.volumeSlider.style.background = `linear-gradient(to right, var(--accent-violet-light) ${pct}%, rgba(255, 255, 255, 0.2) ${pct}%)`;
+      DOM.volumeSlider.style.background = `linear-gradient(to right, var(--accent-mint) ${pct}%, var(--border-subtle) ${pct}%)`;
 
       if (state.volume === 0 || state.isMuted) {
         DOM.volHighIcon.style.display = 'none';
@@ -1219,9 +1131,47 @@
       }
 
       this.bindEventListeners();
+      this.bindKeyboardShortcuts();
+      this.startVinylPhysicsLoop();
 
       // Load initial trending tracks
       await this.loadTrending();
+    },
+
+    /**
+     * Turntable Physics: Spins smoothly while playing and eases slowly to a stop when paused.
+     * Respects prefers-reduced-motion.
+     */
+    startVinylPhysicsLoop() {
+      let vinylAngle = 0;
+      let currentVelocity = 0;
+
+      const loop = () => {
+        const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReduced) {
+          currentVelocity = 0;
+          requestAnimationFrame(loop);
+          return;
+        }
+
+        const targetVelocity = state.isPlaying ? 0.35 : 0;
+        // Friction: smooth acceleration when starting, smooth gradual brake when paused (~1.5s stop)
+        const rate = state.isPlaying ? 0.04 : 0.022;
+        currentVelocity += (targetVelocity - currentVelocity) * rate;
+
+        if (Math.abs(currentVelocity) < 0.001) {
+          currentVelocity = 0;
+        }
+
+        if (currentVelocity > 0 && DOM.vinylDisc) {
+          vinylAngle = (vinylAngle + currentVelocity) % 360;
+          DOM.vinylDisc.style.transform = `rotate(${vinylAngle.toFixed(2)}deg)`;
+        }
+
+        requestAnimationFrame(loop);
+      };
+
+      requestAnimationFrame(loop);
     },
 
     async loadTrending() {
