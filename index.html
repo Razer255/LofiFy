@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vibe Player - Ad-Free Music Player</title>
-  <meta name="description" content="A beautiful, modern, ad-free music player with Spotify-inspired UI, powered by the Jamendo API.">
+  <title>Auralis - Ad-Free Music Player</title>
+  <meta name="description" content="Auralis — an ad-free music player with an elegant Noir Gold aesthetic, powered by the Jamendo API.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -26,14 +26,14 @@
         </button>
         <div class="brand-logo">
           <div class="logo-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
               <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"></circle>
               <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
               <path d="M12 2a10 10 0 0 1 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="2 4"></path>
             </svg>
           </div>
           <div class="brand-text">
-            <span class="brand-title">VIBE<span class="brand-accent">PLAYER</span></span>
+            <span class="brand-title">AURALIS</span>
             <span class="brand-badge">AD-FREE</span>
           </div>
         </div>
@@ -144,18 +144,18 @@
       <main class="center-area" id="centerArea" role="main">
         <div class="center-content-wrapper">
 
-          <!-- Welcome Banner / Placeholder Hero Card -->
+          <!-- Welcome Banner / Refined Noir Gold Hero Card -->
           <section class="welcome-hero-card" id="welcomeHero">
             <div class="hero-text-content">
-              <div class="hero-chip">✨ Pure Vibe • 100% Free & Legal Music</div>
-              <h1 class="hero-title">Discover, Stream & Build Your Vibe</h1>
+              <div class="hero-chip">⚜️ Curated • 100% Free & Legal Music</div>
+              <h1 class="hero-title">Immerse in Pure Sound</h1>
               <p class="hero-subtitle">
-                Welcome to Vibe Player. Enjoy full-length, ad-free tracks legally provided by Jamendo artists. 
+                Welcome to Auralis. Stream full-length, ad-free tracks legally provided by independent Jamendo artists. 
                 Search by song title, favorite artist, or genre tag.
               </p>
             </div>
             <div class="hero-graphic">
-              <div class="glow-orb"></div>
+              <div class="gold-ambient-light"></div>
               <div class="wave-bars">
                 <span></span><span></span><span></span><span></span><span></span>
               </div>
@@ -234,9 +234,15 @@
 
     </div>
 
-    <!-- BOTTOM RIGHT CORNER: Spinning Vinyl Disc Widget -->
+    <!-- BOTTOM RIGHT CORNER: Spinning Vinyl Disc Widget (Large ~250px with Neon Aura) -->
     <div class="vinyl-widget" id="vinylWidget" title="Now Spinning">
-      <div class="vinyl-ambient-glow"></div>
+      <!-- Neon Aura Glow Layers (Behind Disc) -->
+      <div class="vinyl-neon-aura" id="vinylNeonAura">
+        <div class="neon-ambient-glow"></div>
+        <div class="neon-conic-ring"></div>
+        <div class="neon-blur-core"></div>
+        <div class="neon-outer-ring"></div>
+      </div>
       <div class="vinyl-disc" id="vinylDisc">
         <!-- Concentric grooves created via CSS -->
         <div class="vinyl-grooves"></div>
@@ -257,7 +263,7 @@
       </div>
     </div>
 
-    <!-- NOW-PLAYING BAR (Spotify Vibes) -->
+    <!-- NOW-PLAYING BAR (Spotify Vibes - Noir Gold) -->
     <footer class="now-playing-bar" id="nowPlayingBar" role="region" aria-label="Audio Player Controls">
 
       <!-- Left Column: Current Track Info -->
@@ -272,7 +278,7 @@
         </div>
         <div class="track-details">
           <div class="track-title" id="nowPlayingTitle">Select a track to play</div>
-          <div class="track-artist" id="nowPlayingArtist">Vibe Player</div>
+          <div class="track-artist" id="nowPlayingArtist">Auralis</div>
         </div>
         <div class="track-actions">
           <button class="action-btn" id="btnLike" title="Like song" aria-label="Like song">
@@ -416,7 +422,7 @@
         <button class="modal-close-btn" id="closeApiModalBtn">&times;</button>
       </div>
       <div class="modal-body">
-        <p>Vibe Player uses the free, legal <strong>Jamendo API v3.0</strong> to stream full-length music.</p>
+        <p>Auralis uses the free, legal <strong>Jamendo API v3.0</strong> to stream full-length music.</p>
         
         <div class="modal-step-box">
           <h4>How to get your free Client ID:</h4>
