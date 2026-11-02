@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vibe Player - Ad-Free Music Player</title>
+  <meta name="description" content="A beautiful, modern, ad-free music player with Spotify-inspired UI, powered by the Jamendo API.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- App Shell -->
+  <div class="app-layout" id="appLayout">
+
+    <!-- Top Navigation Bar -->
+    <header class="top-nav" id="topNav">
+      <div class="brand">
+        <button class="mobile-toggle-btn" id="mobileDrawerBtn" aria-label="Toggle playlist drawer">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+        <div class="brand-logo">
+          <div class="logo-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"></circle>
+              <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
+              <path d="M12 2a10 10 0 0 1 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="2 4"></path>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">VIBE<span class="brand-accent">PLAYER</span></span>
+            <span class="brand-badge">AD-FREE</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center Quick Search Bar -->
+      <div class="header-search-wrapper">
+        <form class="search-form" id="searchForm" role="search">
+          <div class="search-input-box">
+            <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input 
+              type="text" 
+              id="searchInput" 
+              class="search-input" 
+              placeholder="Search tracks, artists, or genres..." 
+              autocomplete="off" 
+              spellcheck="false"
+            >
+            <button type="button" id="clearSearchBtn" class="clear-search-btn" aria-label="Clear search" title="Clear search">
+              &times;
+            </button>
+          </div>
+          <button type="submit" class="search-submit-btn" id="searchSubmitBtn">Search</button>
+        </form>
+      </div>
+
+      <!-- Right Header Actions -->
+      <div class="header-actions">
+        <button class="status-pill-btn" id="apiKeyStatusBtn" title="Click to view/set Jamendo Client ID">
+          <span class="status-dot" id="statusDot"></span>
+          <span id="apiStatusText">Jamendo API</span>
+        </button>
+        <button class="icon-circle-btn" id="shortcutsBtn" title="Keyboard Shortcuts (?)" aria-label="Keyboard Shortcuts">
+          <span>?</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace (Sidebar + Center Content) -->
+    <div class="main-body" id="mainBody">
+
+      <!-- LEFT SIDEBAR: My Playlist -->
+      <aside class="sidebar" id="sidebar" aria-label="My Playlist Sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-title-row">
+            <div class="sidebar-title-group">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 18V5l12-2v13"></path>
+                <circle cx="6" cy="18" r="3"></circle>
+                <circle cx="18" cy="16" r="3"></circle>
+              </svg>
+              <h2>My Playlist</h2>
+            </div>
+            <div class="sidebar-actions">
+              <button class="pill-btn-small" id="shufflePlayBtn" title="Shuffle Play Playlist">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="16 3 21 3 21 8"></polyline>
+                  <line x1="4" y1="20" x2="21" y2="3"></line>
+                  <polyline points="21 16 21 21 16 21"></polyline>
+                  <line x1="15" y1="15" x2="21" y2="21"></line>
+                  <line x1="4" y1="4" x2="9" y2="9"></line>
+                </svg>
+                <span>Play</span>
+              </button>
+              <button class="pill-btn-small danger" id="clearPlaylistBtn" title="Clear all songs">
+                <span>Clear</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Total Songs and Playlist Duration -->
+          <div class="playlist-meta-bar">
+            <span class="meta-tag" id="playlistCount">0 songs</span>
+            <span class="meta-bullet">•</span>
+            <span class="meta-tag" id="playlistDuration">0m 0s total</span>
+            <span class="drag-hint" title="Drag songs to reorder list">⇅ Drag to reorder</span>
+          </div>
+        </div>
+
+        <!-- Playlist Tracks List -->
+        <div class="playlist-scroll-container">
+          <ul class="playlist-list" id="playlistList" role="list">
+            <!-- Dynamically populated playlist items -->
+          </ul>
+
+          <!-- Empty State -->
+          <div class="playlist-empty-state" id="playlistEmptyState">
+            <div class="empty-icon-wrap">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <path d="M9 18V5l12-2v13"></path>
+                <circle cx="6" cy="18" r="3"></circle>
+                <circle cx="18" cy="16" r="3"></circle>
+              </svg>
+            </div>
+            <h3>Your playlist is empty</h3>
+            <p>Explore music in the center area and click the <strong>+</strong> button on any song to add it here!</p>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Sidebar Backdrop for Mobile -->
+      <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+      <!-- CENTER AREA: Clean Placeholder Section with Welcome & Search Results -->
+      <main class="center-area" id="centerArea" role="main">
+        <div class="center-content-wrapper">
+
+          <!-- Welcome Banner / Placeholder Hero Card -->
+          <section class="welcome-hero-card" id="welcomeHero">
+            <div class="hero-text-content">
+              <div class="hero-chip">✨ Pure Vibe • 100% Free & Legal Music</div>
+              <h1 class="hero-title">Discover, Stream & Build Your Vibe</h1>
+              <p class="hero-subtitle">
+                Welcome to Vibe Player. Enjoy full-length, ad-free tracks legally provided by Jamendo artists. 
+                Search by song title, favorite artist, or genre tag.
+              </p>
+            </div>
+            <div class="hero-graphic">
+              <div class="glow-orb"></div>
+              <div class="wave-bars">
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Search Filter Tabs & Genre Tags -->
+          <section class="filter-controls-section" id="filterControls">
+            <div class="search-filter-pills">
+              <span class="filter-label">Search in:</span>
+              <button class="filter-mode-btn active" data-type="all">All Tracks</button>
+              <button class="filter-mode-btn" data-type="artist">Artist Name</button>
+              <button class="filter-mode-btn" data-type="tag">Genre / Tag</button>
+            </div>
+
+            <!-- Quick Genre Tag Chips -->
+            <div class="genre-tags-scroller" id="genreTagsContainer">
+              <!-- Rendered via JavaScript from CONFIG.GENRE_TAGS -->
+            </div>
+          </section>
+
+          <!-- API Key Notice Banner (Visible if key is not configured) -->
+          <div class="api-notice-banner" id="apiNoticeBanner" style="display: none;">
+            <div class="notice-icon">🔑</div>
+            <div class="notice-info">
+              <strong>Jamendo Client ID Setup</strong>
+              <span>You are currently in Preview Mode. Add your free Jamendo Client ID in <code class="code-tag">config.js</code> or paste it directly to unlock the full catalog!</span>
+            </div>
+            <button class="setup-btn" id="openSetupModalBtn">Setup Client ID</button>
+          </div>
+
+          <!-- Results Section Header -->
+          <div class="results-header">
+            <div class="results-title-group">
+              <h2 id="resultsHeading">Trending Tracks</h2>
+              <span class="results-badge" id="resultsCountBadge">Loading...</span>
+            </div>
+            <div class="results-tools">
+              <button class="refresh-btn" id="refreshBtn" title="Refresh current list">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="23 4 23 10 17 10"></polyline>
+                  <polyline points="1 20 1 14 7 14"></polyline>
+                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                </svg>
+                <span>Refresh</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Dynamic Results Grid -->
+          <div class="results-grid" id="resultsGrid" aria-live="polite">
+            <!-- Rendered track cards or skeleton loaders -->
+          </div>
+
+          <!-- Empty State -->
+          <div class="results-empty-state" id="resultsEmptyState" style="display: none;">
+            <div class="empty-state-art">🔍</div>
+            <h3>No matching tracks found</h3>
+            <p>Try searching for a different keyword, artist, or try one of the genre tags above.</p>
+            <button class="pill-btn primary" id="resetSearchBtn">Back to Trending Tracks</button>
+          </div>
+
+          <!-- Error State -->
+          <div class="results-error-state" id="resultsErrorState" style="display: none;">
+            <div class="error-state-art">⚠️</div>
+            <h3 id="errorMessageHeading">Unable to connect to Jamendo API</h3>
+            <p id="errorMessageDetail">Please check your internet connection or verify your Jamendo Client ID.</p>
+            <div class="error-actions">
+              <button class="pill-btn primary" id="retrySearchBtn">Retry Connection</button>
+              <button class="pill-btn outline" id="loadFallbackBtn">Load Demo Tracks</button>
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+    </div>
+
+    <!-- BOTTOM RIGHT CORNER: Spinning Vinyl Disc Widget -->
+    <div class="vinyl-widget" id="vinylWidget" title="Now Spinning">
+      <div class="vinyl-ambient-glow"></div>
+      <div class="vinyl-disc" id="vinylDisc">
+        <!-- Concentric grooves created via CSS -->
+        <div class="vinyl-grooves"></div>
+        <div class="vinyl-center-label">
+          <img 
+            id="vinylCover" 
+            src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&auto=format&fit=crop&q=80" 
+            alt="Current track album cover"
+            loading="lazy"
+          >
+          <div class="vinyl-spindle-hole"></div>
+        </div>
+        <div class="vinyl-gloss-sheen"></div>
+      </div>
+      <div class="vinyl-badge">
+        <span class="vinyl-pulse-dot"></span>
+        <span id="vinylStatusText">IDLE</span>
+      </div>
+    </div>
+
+    <!-- NOW-PLAYING BAR (Spotify Vibes) -->
+    <footer class="now-playing-bar" id="nowPlayingBar" role="region" aria-label="Audio Player Controls">
+
+      <!-- Left Column: Current Track Info -->
+      <div class="player-col player-left">
+        <div class="track-thumb-wrapper">
+          <img 
+            id="nowPlayingCover" 
+            src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&auto=format&fit=crop&q=80" 
+            alt="Now playing cover"
+            class="track-thumb"
+          >
+        </div>
+        <div class="track-details">
+          <div class="track-title" id="nowPlayingTitle">Select a track to play</div>
+          <div class="track-artist" id="nowPlayingArtist">Vibe Player</div>
+        </div>
+        <div class="track-actions">
+          <button class="action-btn" id="btnLike" title="Like song" aria-label="Like song">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+          </button>
+          <button class="action-btn" id="btnAddToPlaylist" title="Add current track to playlist" aria-label="Add to playlist">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Center Column: Player Transport Controls & Timeline -->
+      <div class="player-col player-center">
+        <!-- Control Buttons -->
+        <div class="player-controls">
+          <!-- Shuffle Button -->
+          <button class="control-btn" id="btnShuffle" title="Shuffle (S)" aria-label="Toggle shuffle">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="16 3 21 3 21 8"></polyline>
+              <line x1="4" y1="20" x2="21" y2="3"></line>
+              <polyline points="21 16 21 21 16 21"></polyline>
+              <line x1="15" y1="15" x2="21" y2="21"></line>
+              <line x1="4" y1="4" x2="9" y2="9"></line>
+            </svg>
+            <span class="active-dot"></span>
+          </button>
+
+          <!-- Previous Button -->
+          <button class="control-btn" id="btnPrev" title="Previous (Left Arrow)" aria-label="Previous track">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="19 20 9 12 19 4 19 20"></polygon>
+              <line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="3"></line>
+            </svg>
+          </button>
+
+          <!-- Main Play / Pause Button -->
+          <button class="control-btn play-pause-btn" id="btnPlayPause" title="Play/Pause (Space)" aria-label="Play or Pause">
+            <!-- Play Icon -->
+            <svg class="play-icon" id="playIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            <!-- Pause Icon -->
+            <svg class="pause-icon" id="pauseIcon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+              <rect x="6" y="4" width="4" height="16"></rect>
+              <rect x="14" y="4" width="4" height="16"></rect>
+            </svg>
+          </button>
+
+          <!-- Next Button -->
+          <button class="control-btn" id="btnNext" title="Next (Right Arrow)" aria-label="Next track">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5 4 15 12 5 20 5 4"></polygon>
+              <line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="3"></line>
+            </svg>
+          </button>
+
+          <!-- Repeat Button -->
+          <button class="control-btn" id="btnRepeat" title="Repeat (R)" aria-label="Toggle repeat mode">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="17 1 21 5 17 9"></polyline>
+              <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+              <polyline points="7 23 3 19 7 15"></polyline>
+              <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+            </svg>
+            <span class="repeat-one-indicator" id="repeatOneBadge">1</span>
+            <span class="active-dot"></span>
+          </button>
+        </div>
+
+        <!-- Timeline Scrubber -->
+        <div class="player-timeline">
+          <span class="time-text" id="currentTime">0:00</span>
+          <div class="progress-container" id="progressContainer" role="slider" aria-label="Track progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+            <div class="progress-buffer" id="progressBuffer"></div>
+            <div class="progress-bar-fill" id="progressFill"></div>
+            <div class="progress-handle" id="progressHandle"></div>
+          </div>
+          <span class="time-text" id="totalTime">0:00</span>
+        </div>
+      </div>
+
+      <!-- Right Column: Volume & Extra Controls -->
+      <div class="player-col player-right">
+        <div class="volume-control-wrap">
+          <button class="volume-btn" id="btnVolume" title="Mute/Unmute (M)" aria-label="Toggle mute">
+            <!-- High Volume Icon -->
+            <svg class="vol-icon vol-high" id="volHighIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            </svg>
+            <!-- Muted Icon -->
+            <svg class="vol-icon vol-muted" id="volMutedIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <line x1="23" y1="9" x2="17" y2="15"></line>
+              <line x1="17" y1="9" x2="23" y2="15"></line>
+            </svg>
+          </button>
+          <div class="volume-slider-container">
+            <input 
+              type="range" 
+              id="volumeSlider" 
+              class="volume-slider" 
+              min="0" 
+              max="1" 
+              step="0.01" 
+              value="0.8" 
+              aria-label="Volume Slider"
+            >
+          </div>
+        </div>
+
+        <button class="icon-btn mobile-playlist-toggle" id="drawerToggleBottomBtn" title="My Playlist Drawer" aria-label="Open playlist">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="8" y1="6" x2="21" y2="6"></line>
+            <line x1="8" y1="12" x2="21" y2="12"></line>
+            <line x1="8" y1="18" x2="21" y2="18"></line>
+            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+    </footer>
+
+  </div>
+
+  <!-- API KEY MODAL -->
+  <div class="modal-overlay" id="apiKeyModal" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="modal-icon">🔑</div>
+          <h3>Jamendo API Configuration</h3>
+        </div>
+        <button class="modal-close-btn" id="closeApiModalBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Vibe Player uses the free, legal <strong>Jamendo API v3.0</strong> to stream full-length music.</p>
+        
+        <div class="modal-step-box">
+          <h4>How to get your free Client ID:</h4>
+          <ol>
+            <li>Visit <a href="https://developer.jamendo.com/" target="_blank" rel="noopener noreferrer">developer.jamendo.com</a></li>
+            <li>Create an account and click <strong>"Create an app"</strong></li>
+            <li>Copy your generated <strong>Client ID</strong></li>
+          </ol>
+        </div>
+
+        <div class="modal-input-group">
+          <label for="modalApiKeyInput">Paste Client ID here (or edit <code>config.js</code>):</label>
+          <input 
+            type="text" 
+            id="modalApiKeyInput" 
+            class="modal-text-input" 
+            placeholder="e.g. c89f7b12..." 
+            spellcheck="false"
+          >
+          <span class="modal-hint">Saved instantly to your browser storage and tested in real-time.</span>
+        </div>
+
+        <div class="modal-feedback" id="apiKeyFeedback" style="display: none;"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="pill-btn outline" id="resetApiKeyBtn">Clear Key</button>
+        <button class="pill-btn primary" id="saveApiKeyBtn">Save & Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEYBOARD SHORTCUTS MODAL -->
+  <div class="modal-overlay" id="shortcutsModal" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="modal-icon">⌨️</div>
+          <h3>Keyboard Shortcuts</h3>
+        </div>
+        <button class="modal-close-btn" id="closeShortcutsModalBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="shortcuts-grid">
+          <div class="shortcut-row">
+            <span class="shortcut-desc">Play / Pause</span>
+            <kbd class="key-tag">Space</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span class="shortcut-desc">Next Track</span>
+            <kbd class="key-tag">→</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span class="shortcut-desc">Previous Track</span>
+            <kbd class="key-tag">←</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span class="shortcut-desc">Volume Up (+5%)</span>
+            <kbd class="key-tag">↑</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span class="shortcut-desc">Volume Down (-5%)</span>
+            <kbd class="key-tag">↓</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span class="shortcut-desc">Toggle Mute</span>
+            <kbd class="key-tag">M</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span class="shortcut-desc">Toggle Shuffle</span>
+            <kbd class="key-tag">S</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span class="shortcut-desc">Cycle Repeat (Off / All / One)</span>
+            <kbd class="key-tag">R</kbd>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="pill-btn primary" id="dismissShortcutsBtn">Got It</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notifications Container -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- Scripts -->
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
