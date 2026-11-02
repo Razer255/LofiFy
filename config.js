@@ -1,12 +1,12 @@
 /**
- * Vibe Player - Configuration
+ * Auralis - Configuration
  *
  * HOW TO GET A FREE JAMENDO CLIENT ID:
  * 1. Go to the Jamendo Developer Portal: https://developer.jamendo.com/
  * 2. Create a free account and register an application (takes < 1 minute).
  * 3. Copy your "Client ID" and paste it into JAMENDO_CLIENT_ID below.
  *
- * NOTE: You can also paste your Client ID directly into the Vibe Player UI
+ * NOTE: You can also paste your Client ID directly into the Auralis UI
  * using the "API Key" button at the top right of the player!
  */
 

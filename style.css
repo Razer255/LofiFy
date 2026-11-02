@@ -1,59 +1,72 @@
 /* ==========================================================================
-   Vibe Player - Stylesheet
-   Theme: Midnight Indigo / Modern Glassmorphic Spotify-inspired Dark Theme
+   Auralis - Stylesheet
+   Theme: "Noir Gold" (Classic yet Modern, Refined Dark & Champagne Gold)
+   All colors and typography are centralized in CSS variables below for easy tweaking.
    ========================================================================== */
 
-/* --- CSS Variables & Design System --- */
+/* --- 1. CSS VARIABLES & DESIGN TOKENS --- */
 :root {
-  --bg-base: #0B0B1A;
-  --bg-panel: #15152B;
-  --bg-panel-rgb: 21, 21, 43;
-  --bg-panel-secondary: #1C1C38;
-  --bg-card: rgba(26, 26, 52, 0.7);
-  --bg-card-hover: rgba(40, 40, 78, 0.85);
+  /* Dark Noir Palette */
+  --bg-base: #0C0C0E;             /* Near-black deep obsidian canvas */
+  --bg-panel: #151517;            /* Solid refined dark panel */
+  --bg-panel-rgb: 21, 21, 23;
+  --bg-panel-secondary: #18181B;  /* Subtle elevated panel */
+  --bg-card: #1B1B1F;             /* Card background */
+  --bg-card-hover: #232328;       /* Card hover state */
 
-  --accent-violet: #8B5CF6;
-  --accent-violet-rgb: 139, 92, 246;
-  --accent-violet-light: #A78BFA;
-  --accent-violet-dark: #6D28D9;
-  --accent-violet-glow: rgba(139, 92, 246, 0.45);
+  /* Champagne Gold Accents */
+  --accent-gold: #D4AF37;         /* Primary Champagne Gold */
+  --accent-gold-rgb: 212, 175, 55;
+  --accent-gold-hover: #E8C872;   /* Lighter warm gold for hovers */
+  --accent-gold-glow: rgba(212, 175, 55, 0.45);
+  --accent-gold-subtle: rgba(212, 175, 55, 0.08);
+  --accent-gold-border: rgba(212, 175, 55, 0.35);
 
-  --accent-coral: #FF6B6B;
-  --accent-coral-rgb: 255, 107, 107;
-  --accent-coral-hover: #FA5252;
-  --accent-coral-glow: rgba(255, 107, 107, 0.35);
+  /* Typography Colors */
+  --text-main: #F5F0E6;           /* Ivory heading & primary text */
+  --text-secondary: #C8C3B6;      /* Soft warm gray secondary text */
+  --text-muted: #8C8778;          /* Muted warm taupe text */
+  --text-dim: #5C584E;            /* Dim helper text */
 
-  --text-main: #F4F4F8;
-  --text-secondary: #D1D1E0;
-  --text-muted: #A0A0B8;
-  --text-dim: #71718A;
+  /* Borders & Dividers */
+  --border-subtle: #2A2A2F;       /* Crisp 1px boundary lines */
+  --border-light: #38383F;        /* Slightly lighter border */
+  --border-gold: rgba(212, 175, 55, 0.4);
 
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-light: rgba(255, 255, 255, 0.14);
-  --border-violet: rgba(139, 92, 246, 0.35);
+  /* Typography Families */
+  --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
+  /* Sizing & Radius */
   --radius-xs: 4px;
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
-  --radius-xl: 24px;
+  --radius-xl: 20px;
   --radius-full: 9999px;
 
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.6);
-  --shadow-glow: 0 0 24px var(--accent-violet-glow);
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.65);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.85);
+  --shadow-gold: 0 0 24px var(--accent-gold-glow);
 
-  --transition-fast: 0.15s ease;
-  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-
+  /* Layout dimensions */
   --sidebar-width: 330px;
   --player-bar-height: 90px;
   --top-nav-height: 68px;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Audio-reactive dynamic values (updated via Web Audio API or CSS fallback) */
+  --bass-scale: 1;
+  --bass-glow: 1;
 }
 
-/* --- Global Reset & Base Styles --- */
+/* --- 2. GLOBAL RESET & BASE STYLES --- */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -66,31 +79,31 @@ html, body {
   overflow: hidden;
   background-color: var(--bg-base);
   color: var(--text-main);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   user-select: none;
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar - Noir Gold */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(11, 11, 26, 0.4);
+  background: var(--bg-base);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(139, 92, 246, 0.3);
+  background: rgba(212, 175, 55, 0.25);
   border-radius: var(--radius-full);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-violet);
+  background: var(--accent-gold);
 }
 
-/* Focus Outlines */
+/* Focus States */
 :focus-visible {
-  outline: 2px solid var(--accent-violet);
+  outline: 2px solid var(--accent-gold);
   outline-offset: 2px;
 }
 
@@ -109,28 +122,34 @@ img {
   display: block;
 }
 
-/* --- Layout Structure --- */
+/* Typography elements */
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.2px;
+}
+
+/* --- 3. LAYOUT STRUCTURE --- */
 .app-layout {
   display: flex;
   flex-direction: column;
   width: 100vw;
   height: 100vh;
   position: relative;
-  background: radial-gradient(circle at 15% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
-              radial-gradient(circle at 85% 80%, rgba(255, 107, 107, 0.05) 0%, transparent 45%),
+  background: radial-gradient(circle at 10% 15%, rgba(212, 175, 55, 0.04) 0%, transparent 45%),
+              radial-gradient(circle at 90% 85%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
               var(--bg-base);
 }
 
-/* --- Top Navigation Bar --- */
+/* --- 4. TOP NAVIGATION BAR --- */
 .top-nav {
   height: var(--top-nav-height);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px;
-  background: rgba(var(--bg-panel-rgb), 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  padding: 0 28px;
+  background: var(--bg-panel);
   border-bottom: 1px solid var(--border-subtle);
   z-index: 50;
   gap: 16px;
@@ -149,62 +168,60 @@ img {
   justify-content: center;
   width: 38px;
   height: 38px;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   color: var(--text-main);
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
 }
 .mobile-toggle-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--accent-violet-light);
+  border-color: var(--accent-gold);
+  color: var(--accent-gold-hover);
 }
 
 .brand-logo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   cursor: pointer;
 }
 
 .logo-icon {
   width: 36px;
   height: 36px;
-  border-radius: var(--radius-md);
-  background: linear-gradient(135deg, var(--accent-violet), #6366F1);
-  color: #fff;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--accent-gold), #9A7B2C);
+  color: #0C0C0E;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px var(--accent-violet-glow);
+  box-shadow: 0 2px 10px rgba(212, 175, 55, 0.35);
 }
 
 .brand-text {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: 10px;
 }
 
 .brand-title {
-  font-size: 1.25rem;
-  font-weight: 800;
-  letter-spacing: -0.5px;
-  color: var(--text-main);
-}
-.brand-accent {
-  background: linear-gradient(135deg, var(--accent-violet-light), var(--accent-coral));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: 800;
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--accent-gold);
+  text-shadow: 0 1px 8px rgba(212, 175, 55, 0.25);
 }
 
 .brand-badge {
+  font-family: var(--font-sans);
   font-size: 0.65rem;
   font-weight: 700;
-  letter-spacing: 0.8px;
-  padding: 2px 6px;
+  letter-spacing: 1px;
+  padding: 2px 7px;
   border-radius: var(--radius-xs);
-  background: rgba(255, 107, 107, 0.15);
-  color: var(--accent-coral);
-  border: 1px solid rgba(255, 107, 107, 0.3);
+  background: rgba(212, 175, 55, 0.1);
+  color: var(--accent-gold);
+  border: 1px solid rgba(212, 175, 55, 0.35);
 }
 
 /* Header Search */
@@ -230,7 +247,7 @@ img {
 .search-icon {
   position: absolute;
   left: 14px;
-  color: var(--text-dim);
+  color: var(--text-muted);
   pointer-events: none;
   transition: var(--transition-fast);
 }
@@ -240,7 +257,7 @@ img {
   height: 42px;
   padding: 0 38px 0 42px;
   border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   color: var(--text-main);
   font-size: 0.875rem;
@@ -249,17 +266,17 @@ img {
 }
 
 .search-input::placeholder {
-  color: var(--text-dim);
+  color: var(--text-muted);
 }
 
 .search-input:focus {
-  background: rgba(255, 255, 255, 0.09);
-  border-color: var(--accent-violet);
-  box-shadow: 0 0 16px var(--accent-violet-glow);
+  background: #202025;
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 14px rgba(212, 175, 55, 0.25);
 }
 
 .search-input:focus + .search-icon {
-  color: var(--accent-violet-light);
+  color: var(--accent-gold);
 }
 
 .clear-search-btn {
@@ -271,27 +288,28 @@ img {
   display: none;
   align-items: center;
   justify-content: center;
-  color: var(--text-dim);
+  color: var(--text-muted);
   font-size: 1.1rem;
   line-height: 1;
 }
 .clear-search-btn:hover {
   color: var(--text-main);
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .search-submit-btn {
   height: 42px;
-  padding: 0 18px;
+  padding: 0 20px;
   border-radius: var(--radius-full);
-  background: var(--accent-violet);
-  color: #fff;
+  background: var(--accent-gold);
+  color: #0C0C0E;
   font-size: 0.875rem;
-  font-weight: 600;
-  box-shadow: 0 4px 14px var(--accent-violet-glow);
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.25);
 }
 .search-submit-btn:hover {
-  background: var(--accent-violet-dark);
+  background: var(--accent-gold-hover);
   transform: translateY(-1px);
 }
 .search-submit-btn:active {
@@ -311,15 +329,14 @@ img {
   gap: 8px;
   padding: 7px 14px;
   border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   font-size: 0.775rem;
   font-weight: 500;
   color: var(--text-secondary);
 }
 .status-pill-btn:hover {
-  background: rgba(255, 255, 255, 0.09);
-  border-color: var(--border-light);
+  border-color: var(--border-gold);
   color: var(--text-main);
 }
 
@@ -327,17 +344,17 @@ img {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #10B981; /* Green by default */
+  background: #10B981;
   box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
   transition: var(--transition-fast);
 }
 .status-dot.warning {
-  background: #F59E0B;
-  box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+  background: var(--accent-gold);
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.6);
 }
 .status-dot.error {
-  background: var(--accent-coral);
-  box-shadow: 0 0 8px var(--accent-coral-glow);
+  background: #E53E3E;
+  box-shadow: 0 0 8px rgba(229, 62, 62, 0.6);
 }
 
 .icon-circle-btn {
@@ -347,19 +364,19 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   font-size: 0.85rem;
   font-weight: 700;
   color: var(--text-secondary);
 }
 .icon-circle-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text-main);
-  border-color: var(--accent-violet);
+  background: var(--bg-card-hover);
+  color: var(--accent-gold);
+  border-color: var(--accent-gold);
 }
 
-/* --- Main Body Workspace --- */
+/* --- 5. MAIN WORKSPACE --- */
 .main-body {
   flex: 1;
   display: flex;
@@ -368,16 +385,14 @@ img {
   position: relative;
 }
 
-/* --- LEFT SIDEBAR: My Playlist --- */
+/* --- 6. LEFT SIDEBAR: MY PLAYLIST --- */
 .sidebar {
   width: var(--sidebar-width);
   min-width: var(--sidebar-width);
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: rgba(var(--bg-panel-rgb), 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: var(--bg-panel);
   border-right: 1px solid var(--border-subtle);
   transition: transform var(--transition-normal);
   z-index: 40;
@@ -401,14 +416,15 @@ img {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--accent-violet-light);
+  color: var(--accent-gold);
 }
 
 .sidebar-title-group h2 {
-  font-size: 1.05rem;
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--text-main);
-  letter-spacing: -0.3px;
+  letter-spacing: -0.2px;
 }
 
 .sidebar-actions {
@@ -418,29 +434,30 @@ img {
 }
 
 .pill-btn-small {
-  padding: 5px 10px;
+  padding: 5px 11px;
   border-radius: var(--radius-full);
   font-size: 0.725rem;
   font-weight: 600;
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: rgba(139, 92, 246, 0.15);
-  color: var(--accent-violet-light);
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  background: rgba(212, 175, 55, 0.1);
+  color: var(--accent-gold);
+  border: 1px solid var(--border-gold);
 }
 .pill-btn-small:hover {
-  background: var(--accent-violet);
-  color: #fff;
+  background: var(--accent-gold);
+  color: #0C0C0E;
 }
 .pill-btn-small.danger {
-  background: rgba(255, 107, 107, 0.12);
-  color: var(--accent-coral);
-  border-color: rgba(255, 107, 107, 0.25);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-muted);
+  border-color: var(--border-subtle);
 }
 .pill-btn-small.danger:hover {
-  background: var(--accent-coral);
-  color: #fff;
+  background: #3A2020;
+  color: #F87171;
+  border-color: #7F1D1D;
 }
 
 .playlist-meta-bar {
@@ -481,8 +498,8 @@ img {
   align-items: center;
   gap: 10px;
   padding: 8px 10px;
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.02);
+  border-radius: var(--radius-sm);
+  background: var(--bg-panel-secondary);
   border: 1px solid transparent;
   transition: all var(--transition-fast);
   cursor: grab;
@@ -492,31 +509,30 @@ img {
   cursor: grabbing;
 }
 .playlist-item:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--bg-card);
   border-color: var(--border-subtle);
 }
 
 /* Dragging styles */
 .playlist-item.dragging {
   opacity: 0.35;
-  background: rgba(139, 92, 246, 0.2);
-  border: 1px dashed var(--accent-violet);
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px dashed var(--accent-gold);
 }
 .playlist-item.drag-over-top {
-  border-top: 2px solid var(--accent-violet) !important;
+  border-top: 2px solid var(--accent-gold) !important;
 }
 .playlist-item.drag-over-bottom {
-  border-bottom: 2px solid var(--accent-violet) !important;
+  border-bottom: 2px solid var(--accent-gold) !important;
 }
 
-/* Currently Playing Item: Violet Glow Highlight */
+/* Currently Playing Item: Refined Gold Accent (NO Purple Glow) */
 .playlist-item.active-playing {
-  background: rgba(139, 92, 246, 0.15) !important;
-  border-color: var(--accent-violet) !important;
-  box-shadow: 0 0 16px var(--accent-violet-glow);
+  background: var(--accent-gold-subtle) !important;
+  border: 1px solid var(--border-gold) !important;
 }
 .playlist-item.active-playing .playlist-item-title {
-  color: var(--accent-violet-light);
+  color: var(--accent-gold);
   font-weight: 600;
 }
 
@@ -536,10 +552,11 @@ img {
   position: relative;
   width: 44px;
   height: 44px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-xs);
   overflow: hidden;
   flex-shrink: 0;
   box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-subtle);
 }
 
 .playlist-item-cover {
@@ -552,22 +569,23 @@ img {
 .playlist-item-play-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(12, 12, 14, 0.65);
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
   transition: var(--transition-fast);
+  color: var(--accent-gold);
 }
 .playlist-item:hover .playlist-item-play-overlay {
   opacity: 1;
 }
 .playlist-item.active-playing .playlist-item-play-overlay {
   opacity: 1;
-  background: rgba(139, 92, 246, 0.45);
+  background: rgba(12, 12, 14, 0.5);
 }
 
-/* Sound bars / Equalizer animation for playing song */
+/* Sound bars / Equalizer animation for playing song - Gold Bars */
 .equalizer-wave {
   display: flex;
   align-items: flex-end;
@@ -576,7 +594,7 @@ img {
 }
 .equalizer-wave span {
   width: 3px;
-  background: #fff;
+  background: var(--accent-gold);
   border-radius: 1px;
   animation: equalize 1s ease-in-out infinite alternate;
 }
@@ -598,7 +616,8 @@ img {
 }
 
 .playlist-item-title {
-  font-size: 0.825rem;
+  font-family: var(--font-serif);
+  font-size: 0.85rem;
   font-weight: 500;
   color: var(--text-main);
   white-space: nowrap;
@@ -607,6 +626,7 @@ img {
 }
 
 .playlist-item-artist {
+  font-family: var(--font-sans);
   font-size: 0.725rem;
   color: var(--text-muted);
   white-space: nowrap;
@@ -623,7 +643,7 @@ img {
 .playlist-item-remove-btn {
   width: 26px;
   height: 26px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-xs);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -635,8 +655,8 @@ img {
   opacity: 1;
 }
 .playlist-item-remove-btn:hover {
-  color: var(--accent-coral);
-  background: rgba(255, 107, 107, 0.15);
+  color: #EF4444;
+  background: rgba(239, 68, 68, 0.12);
 }
 
 /* Playlist Empty State */
@@ -650,15 +670,15 @@ img {
   color: var(--text-muted);
 }
 .empty-icon-wrap {
-  width: 60px;
-  height: 60px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
-  background: rgba(139, 92, 246, 0.1);
-  color: var(--accent-violet-light);
+  background: rgba(212, 175, 55, 0.08);
+  color: var(--accent-gold);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px dashed rgba(139, 92, 246, 0.3);
+  border: 1px dashed var(--border-gold);
 }
 .playlist-empty-state h3 {
   font-size: 0.95rem;
@@ -671,7 +691,7 @@ img {
   color: var(--text-muted);
 }
 
-/* --- CENTER AREA: Clean Placeholder Section --- */
+/* --- 7. CENTER AREA: CLEAN PLACEHOLDER DISCOVERY --- */
 .center-area {
   flex: 1;
   overflow-y: auto;
@@ -682,20 +702,22 @@ img {
 .center-content-wrapper {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 24px 28px 120px 28px; /* Extra bottom padding so floating disc / player bar doesn't obscure content */
+  /* Extra generous bottom padding so the larger ~250px disc NEVER covers cards */
+  padding: 24px 28px 320px 28px;
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-/* Welcome Hero Card (Clean placeholder easily replaced later) */
+/* Welcome Hero Card - Refined Noir Gold */
 .welcome-hero-card {
   position: relative;
   overflow: hidden;
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   padding: 32px 36px;
-  background: linear-gradient(135deg, rgba(30, 20, 60, 0.85) 0%, rgba(21, 21, 43, 0.9) 60%, rgba(45, 20, 45, 0.75) 100%);
-  border: 1px solid var(--border-violet);
+  background: radial-gradient(ellipse at 85% 30%, rgba(212, 175, 55, 0.12) 0%, transparent 65%),
+              var(--bg-panel);
+  border: 1px solid var(--border-gold);
   box-shadow: var(--shadow-md);
   display: flex;
   align-items: center;
@@ -714,18 +736,20 @@ img {
   align-self: flex-start;
   font-size: 0.75rem;
   font-weight: 600;
+  letter-spacing: 0.5px;
   padding: 4px 12px;
   border-radius: var(--radius-full);
-  background: rgba(139, 92, 246, 0.2);
-  color: var(--accent-violet-light);
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  background: rgba(212, 175, 55, 0.1);
+  color: var(--accent-gold);
+  border: 1px solid var(--border-gold);
 }
 
 .hero-title {
-  font-size: 1.85rem;
-  font-weight: 800;
-  line-height: 1.25;
-  letter-spacing: -0.5px;
+  font-family: var(--font-serif);
+  font-size: 2.1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.3px;
   color: var(--text-main);
 }
 
@@ -744,13 +768,13 @@ img {
   justify-content: center;
 }
 
-.glow-orb {
+.gold-ambient-light {
   position: absolute;
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: radial-gradient(circle, var(--accent-violet-glow) 0%, transparent 70%);
-  filter: blur(20px);
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.3) 0%, transparent 70%);
+  filter: blur(24px);
 }
 
 .wave-bars {
@@ -762,7 +786,7 @@ img {
 }
 .wave-bars span {
   width: 6px;
-  background: linear-gradient(to top, var(--accent-violet), var(--accent-coral));
+  background: linear-gradient(to top, #9A7B2C, var(--accent-gold), var(--accent-gold-hover));
   border-radius: var(--radius-full);
   animation: heroWave 1.4s ease-in-out infinite alternate;
 }
@@ -803,21 +827,22 @@ img {
   font-size: 0.8rem;
   font-weight: 500;
   color: var(--text-secondary);
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-card);
   border: 1px solid var(--border-subtle);
 }
 .filter-mode-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--border-gold);
   color: var(--text-main);
 }
 .filter-mode-btn.active {
-  background: var(--accent-violet);
-  color: #fff;
-  border-color: var(--accent-violet);
-  box-shadow: 0 2px 10px var(--accent-violet-glow);
+  background: var(--accent-gold);
+  color: #0C0C0E;
+  font-weight: 700;
+  border-color: var(--accent-gold);
+  box-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
 }
 
-/* Genre Tags Scroller */
+/* Genre Tags Scroller - Outlined Pills that fill gold when active */
 .genre-tags-scroller {
   display: flex;
   align-items: center;
@@ -838,22 +863,23 @@ img {
   border-radius: var(--radius-full);
   font-size: 0.8rem;
   font-weight: 500;
-  color: var(--text-secondary);
-  background: rgba(var(--bg-panel-rgb), 0.75);
+  color: var(--text-muted);
+  background: transparent;
   border: 1px solid var(--border-subtle);
-  transition: var(--transition-fast);
+  transition: all var(--transition-fast);
 }
 .genre-tag-chip:hover {
-  background: rgba(40, 40, 78, 0.9);
+  background: var(--bg-card);
   color: var(--text-main);
-  border-color: var(--border-light);
+  border-color: var(--border-gold);
   transform: translateY(-1px);
 }
 .genre-tag-chip.active {
-  background: linear-gradient(135deg, var(--accent-violet), #7C3AED);
-  color: #fff;
-  border-color: transparent;
-  box-shadow: 0 4px 12px var(--accent-violet-glow);
+  background: var(--accent-gold);
+  color: #0C0C0E;
+  font-weight: 700;
+  border-color: var(--accent-gold);
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.3);
 }
 
 /* API Notice Banner */
@@ -862,13 +888,13 @@ img {
   align-items: center;
   gap: 16px;
   padding: 14px 20px;
-  border-radius: var(--radius-lg);
-  background: rgba(139, 92, 246, 0.12);
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: var(--radius-md);
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid var(--border-gold);
   box-shadow: var(--shadow-sm);
 }
 .notice-icon {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
 }
 .notice-info {
   flex: 1;
@@ -884,24 +910,25 @@ img {
   color: var(--text-secondary);
 }
 .code-tag {
-  background: rgba(0, 0, 0, 0.4);
+  background: #0C0C0E;
   padding: 2px 6px;
   border-radius: var(--radius-xs);
-  color: var(--accent-violet-light);
+  color: var(--accent-gold);
   font-family: monospace;
+  border: 1px solid var(--border-subtle);
 }
 .setup-btn {
   padding: 8px 16px;
   border-radius: var(--radius-full);
-  background: var(--accent-violet);
-  color: #fff;
+  background: var(--accent-gold);
+  color: #0C0C0E;
   font-size: 0.8rem;
-  font-weight: 600;
-  box-shadow: 0 2px 8px var(--accent-violet-glow);
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
   white-space: nowrap;
 }
 .setup-btn:hover {
-  background: var(--accent-violet-dark);
+  background: var(--accent-gold-hover);
 }
 
 /* Results Section Header */
@@ -920,18 +947,20 @@ img {
 }
 
 .results-title-group h2 {
-  font-size: 1.35rem;
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
   font-weight: 700;
   color: var(--text-main);
-  letter-spacing: -0.3px;
 }
 
 .results-badge {
+  font-family: var(--font-sans);
   font-size: 0.75rem;
   font-weight: 600;
   padding: 3px 10px;
   border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
   color: var(--text-muted);
 }
 
@@ -943,15 +972,15 @@ img {
   border-radius: var(--radius-full);
   font-size: 0.775rem;
   color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--bg-card);
   border: 1px solid var(--border-subtle);
 }
 .refresh-btn:hover {
   color: var(--text-main);
-  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--border-gold);
 }
 
-/* --- Results Grid & Track Cards --- */
+/* --- 8. RESULTS GRID & TRACK CARDS --- */
 .results-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
@@ -964,7 +993,7 @@ img {
   display: flex;
   flex-direction: column;
   padding: 12px;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   transition: all var(--transition-normal);
@@ -974,28 +1003,30 @@ img {
 
 .track-card:hover {
   background: var(--bg-card-hover);
-  border-color: var(--border-violet);
+  border-color: var(--border-gold);
   transform: translateY(-4px);
   box-shadow: var(--shadow-md);
 }
 
-/* Currently Playing Track Card Glow */
+/* Active Track Card: Thin Gold Border & Tint */
 .track-card.active-card {
-  border-color: var(--accent-violet);
-  box-shadow: 0 0 20px var(--accent-violet-glow);
+  border-color: var(--accent-gold);
+  background: rgba(212, 175, 55, 0.05);
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.2);
 }
 .track-card.active-card .card-title {
-  color: var(--accent-violet-light);
+  color: var(--accent-gold);
 }
 
 .card-cover-wrapper {
   position: relative;
   width: 100%;
   aspect-ratio: 1 / 1;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   overflow: hidden;
   margin-bottom: 12px;
-  background: #111;
+  background: #0C0C0E;
+  border: 1px solid var(--border-subtle);
 }
 
 .card-cover {
@@ -1005,10 +1036,10 @@ img {
   transition: transform var(--transition-slow);
 }
 .track-card:hover .card-cover {
-  transform: scale(1.05);
+  transform: scale(1.04);
 }
 
-/* Floating Quick Play Button on Card */
+/* Solid Gold Circle Play Button on Card Hover with Dark Icon */
 .card-play-btn {
   position: absolute;
   right: 10px;
@@ -1016,12 +1047,12 @@ img {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: var(--accent-violet);
-  color: #fff;
+  background: var(--accent-gold);
+  color: #0C0C0E;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 6px 16px var(--accent-violet-glow);
+  box-shadow: 0 6px 16px rgba(212, 175, 55, 0.4);
   opacity: 0;
   transform: translateY(8px);
   transition: all var(--transition-normal);
@@ -1032,7 +1063,7 @@ img {
   transform: translateY(0);
 }
 .card-play-btn:hover {
-  background: var(--accent-violet-light);
+  background: var(--accent-gold-hover);
   transform: scale(1.08) translateY(0);
 }
 
@@ -1044,13 +1075,13 @@ img {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: rgba(15, 15, 30, 0.75);
+  background: rgba(12, 12, 14, 0.8);
   backdrop-filter: blur(8px);
-  color: #fff;
+  color: var(--text-main);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--border-subtle);
   opacity: 0;
   transition: all var(--transition-fast);
   z-index: 3;
@@ -1059,13 +1090,14 @@ img {
   opacity: 1;
 }
 .card-add-playlist-btn:hover {
-  background: var(--accent-coral);
-  border-color: var(--accent-coral);
-  box-shadow: 0 0 12px var(--accent-coral-glow);
+  background: var(--accent-gold);
+  color: #0C0C0E;
+  border-color: var(--accent-gold);
   transform: scale(1.1);
 }
 .card-add-playlist-btn.added {
   background: #10B981;
+  color: #fff;
   border-color: #10B981;
   opacity: 1;
 }
@@ -1077,11 +1109,10 @@ img {
   bottom: 8px;
   padding: 2px 6px;
   border-radius: var(--radius-xs);
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(4px);
+  background: rgba(12, 12, 14, 0.85);
   font-size: 0.675rem;
   font-weight: 500;
-  color: #fff;
+  color: var(--text-secondary);
 }
 
 .card-meta {
@@ -1091,7 +1122,8 @@ img {
 }
 
 .card-title {
-  font-size: 0.925rem;
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--text-main);
   white-space: nowrap;
@@ -1100,6 +1132,7 @@ img {
 }
 
 .card-artist {
+  font-family: var(--font-sans);
   font-size: 0.775rem;
   color: var(--text-muted);
   white-space: nowrap;
@@ -1108,14 +1141,14 @@ img {
 }
 .card-artist:hover {
   color: var(--text-secondary);
-  text-decoration: underline;
 }
 
 /* Skeleton Loaders */
 .skeleton-card {
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   padding: 12px;
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -1123,15 +1156,15 @@ img {
 .skeleton-img {
   width: 100%;
   aspect-ratio: 1 / 1;
-  border-radius: var(--radius-md);
-  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, rgba(255,255,255,0.02) 25%, rgba(212,175,55,0.06) 50%, rgba(255,255,255,0.02) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
 .skeleton-text {
   height: 14px;
   border-radius: var(--radius-xs);
-  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+  background: linear-gradient(90deg, rgba(255,255,255,0.02) 25%, rgba(212,175,55,0.06) 50%, rgba(255,255,255,0.02) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
@@ -1155,17 +1188,16 @@ img {
   text-align: center;
   padding: 60px 20px;
   gap: 14px;
-  background: rgba(var(--bg-panel-rgb), 0.5);
-  border-radius: var(--radius-xl);
+  background: var(--bg-panel);
+  border-radius: var(--radius-lg);
   border: 1px dashed var(--border-subtle);
 }
 .empty-state-art, .error-state-art {
-  font-size: 3rem;
+  font-size: 2.8rem;
   margin-bottom: 4px;
 }
 .results-empty-state h3, .results-error-state h3 {
-  font-size: 1.15rem;
-  font-weight: 700;
+  font-size: 1.25rem;
   color: var(--text-main);
 }
 .results-empty-state p, .results-error-state p {
@@ -1184,35 +1216,37 @@ img {
   padding: 9px 22px;
   border-radius: var(--radius-full);
   font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: 700;
   transition: var(--transition-fast);
 }
 .pill-btn.primary {
-  background: var(--accent-violet);
-  color: #fff;
-  box-shadow: 0 4px 14px var(--accent-violet-glow);
+  background: var(--accent-gold);
+  color: #0C0C0E;
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.3);
 }
 .pill-btn.primary:hover {
-  background: var(--accent-violet-dark);
+  background: var(--accent-gold-hover);
   transform: translateY(-1px);
 }
 .pill-btn.outline {
   background: transparent;
   color: var(--text-main);
-  border: 1px solid var(--border-light);
+  border: 1px solid var(--border-subtle);
 }
 .pill-btn.outline:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: var(--text-main);
+  background: var(--bg-card);
+  border-color: var(--border-gold);
 }
 
-/* --- BOTTOM RIGHT CORNER: Spinning Vinyl Disc Widget --- */
+/* --- 9. BOTTOM RIGHT CORNER: 3X BIGGER SPINNING VINYL DISC & NEON AURA GLOW --- */
+
+/* Vinyl Widget: roughly 250px on desktop (3x larger than previous 85px) */
 .vinyl-widget {
   position: fixed;
-  right: 28px;
+  right: 36px;
   bottom: 106px;
-  width: 96px;
-  height: 96px;
+  width: 250px;
+  height: 250px;
   z-index: 90;
   display: flex;
   align-items: center;
@@ -1221,46 +1255,120 @@ img {
   transition: transform var(--transition-normal);
 }
 .vinyl-widget:hover {
-  transform: scale(1.06);
+  transform: scale(1.03);
 }
 
-/* Ambient glow around the vinyl */
-.vinyl-ambient-glow {
+/* --- NEON AURA GLOW (Multi-Layered, Fades in when playing, Fades out when paused) --- */
+.vinyl-neon-aura {
   position: absolute;
-  inset: -10px;
+  inset: -24px;
   border-radius: 50%;
-  background: radial-gradient(circle, var(--accent-violet-glow) 0%, transparent 70%);
-  filter: blur(12px);
-  opacity: 0.6;
   pointer-events: none;
-  transition: opacity var(--transition-normal);
+  opacity: 0;
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.vinyl-widget.is-playing .vinyl-ambient-glow {
+
+/* Fade in only when music is playing */
+.vinyl-widget.is-playing .vinyl-neon-aura {
   opacity: 1;
-  animation: vinylPulse 2s ease-in-out infinite alternate;
 }
 
-@keyframes vinylPulse {
-  0% { transform: scale(0.95); opacity: 0.7; }
-  100% { transform: scale(1.15); opacity: 1; }
-}
-
-/* The Vinyl Record Disc */
-.vinyl-disc {
-  width: 96px;
-  height: 96px;
+/* Layer 1: Ambient Wide Blurred Gold Glow with dynamic audio-reactive pulse */
+.neon-ambient-glow {
+  position: absolute;
+  inset: -20px;
   border-radius: 50%;
-  background: #111;
+  background: radial-gradient(
+    circle at center,
+    rgba(212, 175, 55, 0.5) 0%,
+    rgba(232, 200, 114, 0.3) 40%,
+    rgba(255, 191, 0, 0.15) 60%,
+    transparent 75%
+  );
+  filter: blur(32px);
+  transform: scale(var(--bass-scale, 1));
+  filter: brightness(var(--bass-glow, 1)) blur(32px);
+  transition: transform 0.08s ease-out, filter 0.08s ease-out;
+}
+
+/* Layer 2: Slowly rotating Conic-Gradient Ring (Gold -> Amber -> Soft White -> Gold) */
+.neon-conic-ring {
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    #D4AF37 0deg,
+    #FFBF00 90deg,
+    rgba(255, 255, 255, 0.95) 180deg,
+    #E8C872 270deg,
+    #D4AF37 360deg
+  );
+  filter: blur(10px);
+  opacity: 0.85;
+  animation: rotateConic 10s linear infinite;
+  animation-play-state: paused;
+}
+.vinyl-widget.is-playing .neon-conic-ring {
+  animation-play-state: running;
+}
+
+@keyframes rotateConic {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Layer 3: Neon Core with 3 layered box-shadows of increasing blur */
+.neon-blur-core {
+  position: absolute;
+  inset: 12px;
+  border-radius: 50%;
+  box-shadow: 
+    0 0 16px rgba(212, 175, 55, 0.8),
+    0 0 38px rgba(212, 175, 55, 0.55),
+    0 0 85px rgba(232, 200, 114, 0.35);
+  animation: neonPulse 2.4s ease-in-out infinite alternate;
+  animation-play-state: paused;
+}
+.vinyl-widget.is-playing .neon-blur-core {
+  animation-play-state: running;
+}
+
+@keyframes neonPulse {
+  0% { opacity: 0.75; transform: scale(0.97); }
+  100% { opacity: 1; transform: scale(1.03); }
+}
+
+/* Layer 4: Fine Neon Edge Ring */
+.neon-outer-ring {
+  position: absolute;
+  inset: 22px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(212, 175, 55, 0.7);
+  box-shadow: inset 0 0 8px rgba(212, 175, 55, 0.4), 0 0 12px rgba(212, 175, 55, 0.6);
+  pointer-events: none;
+}
+
+/* --- THE VINYL RECORD DISC (Realistic 250px) --- */
+.vinyl-disc {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background: #0B0B0D;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7),
-              0 0 12px rgba(139, 92, 246, 0.3);
+  box-shadow: 
+    0 12px 35px rgba(0, 0, 0, 0.9),
+    inset 0 0 8px rgba(0, 0, 0, 0.9);
   overflow: hidden;
-  border: 2px solid #222;
-  /* Spin animation */
-  animation: spinVinyl 12s linear infinite;
+  border: 2px solid #1F1F24;
+  /* Smooth continuous rotation that slows/pauses smoothly */
+  animation: spinVinyl 16s linear infinite;
   animation-play-state: paused;
 }
 
@@ -1280,24 +1388,24 @@ img {
   border-radius: 50%;
   background: repeating-radial-gradient(
     circle at center,
-    #111 0px,
-    #111 2px,
-    #1a1a1a 3px,
-    #111 4px
+    #0B0B0D 0px,
+    #0B0B0D 2px,
+    #18181C 3px,
+    #0B0B0D 4px
   );
-  opacity: 0.9;
+  opacity: 0.92;
   pointer-events: none;
 }
 
-/* Center Album Label */
+/* Center Album Label (100px diameter on 250px disc) */
 .vinyl-center-label {
   position: relative;
-  width: 44px;
-  height: 44px;
+  width: 104px;
+  height: 104px;
   border-radius: 50%;
   overflow: hidden;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
-  border: 2px solid #2a2a3e;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.9);
+  border: 3px solid #2A2A2F;
   z-index: 2;
   display: flex;
   align-items: center;
@@ -1310,15 +1418,15 @@ img {
   object-fit: cover;
 }
 
-/* Spindle Hole in Center */
+/* Brass/Gold Spindle Ring & Hole */
 .vinyl-spindle-hole {
   position: absolute;
-  width: 10px;
-  height: 10px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background: var(--bg-base);
-  border: 1.5px solid #bbb;
-  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.9);
+  border: 2px solid var(--accent-gold);
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.9);
   z-index: 3;
 }
 
@@ -1329,11 +1437,11 @@ img {
   border-radius: 50%;
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.18) 0%,
-    transparent 45%,
-    rgba(255, 255, 255, 0.1) 50%,
-    transparent 55%,
-    rgba(255, 255, 255, 0.15) 100%
+    rgba(255, 255, 255, 0.16) 0%,
+    transparent 42%,
+    rgba(255, 255, 255, 0.08) 50%,
+    transparent 58%,
+    rgba(255, 255, 255, 0.12) 100%
   );
   pointer-events: none;
   z-index: 4;
@@ -1343,51 +1451,49 @@ img {
 .vinyl-badge {
   position: absolute;
   bottom: -6px;
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: var(--radius-full);
-  background: rgba(15, 15, 30, 0.9);
+  background: rgba(15, 15, 17, 0.95);
   border: 1px solid var(--border-subtle);
-  font-size: 0.625rem;
+  font-size: 0.65rem;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   color: var(--text-muted);
   box-shadow: var(--shadow-sm);
   z-index: 5;
 }
 .vinyl-pulse-dot {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: var(--text-dim);
 }
 .vinyl-widget.is-playing .vinyl-pulse-dot {
-  background: var(--accent-violet);
-  box-shadow: 0 0 6px var(--accent-violet);
+  background: var(--accent-gold);
+  box-shadow: 0 0 6px var(--accent-gold);
 }
 .vinyl-widget.is-playing .vinyl-badge {
-  color: var(--accent-violet-light);
-  border-color: rgba(139, 92, 246, 0.4);
+  color: var(--accent-gold);
+  border-color: var(--border-gold);
 }
 
-/* --- NOW-PLAYING BAR (Spotify Vibes) --- */
+/* --- 10. NOW-PLAYING BAR (Spotify Vibes - Noir Gold) --- */
 .now-playing-bar {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   height: var(--player-bar-height);
-  background: rgba(15, 15, 32, 0.96);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-top: 1px solid rgba(139, 92, 246, 0.2);
-  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.5);
+  background: var(--bg-panel);
+  border-top: 1px solid var(--border-subtle);
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px;
+  padding: 0 28px;
   z-index: 100;
 }
 
@@ -1407,10 +1513,11 @@ img {
   position: relative;
   width: 56px;
   height: 56px;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   overflow: hidden;
   flex-shrink: 0;
-  background: #111;
+  background: #0C0C0E;
+  border: 1px solid var(--border-subtle);
   box-shadow: var(--shadow-sm);
 }
 
@@ -1428,7 +1535,8 @@ img {
 }
 
 .track-title {
-  font-size: 0.875rem;
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--text-main);
   white-space: nowrap;
@@ -1437,6 +1545,7 @@ img {
 }
 
 .track-artist {
+  font-family: var(--font-sans);
   font-size: 0.75rem;
   color: var(--text-muted);
   white-space: nowrap;
@@ -1463,16 +1572,16 @@ img {
 }
 .action-btn:hover {
   color: var(--text-main);
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.06);
 }
 .action-btn.liked {
-  color: var(--accent-coral);
+  color: var(--accent-gold);
 }
 .action-btn.liked svg {
-  fill: var(--accent-coral);
+  fill: var(--accent-gold);
 }
 
-/* Center Column: Transport Controls & Timeline */
+/* Center Column: Player Transport Controls & Timeline */
 .player-center {
   width: 40%;
   max-width: 600px;
@@ -1504,34 +1613,34 @@ img {
   transform: scale(0.96);
 }
 
-/* Play/Pause Button */
+/* Play/Pause Button: Solid Gold Circle with Dark Icon */
 .play-pause-btn {
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  background: #fff;
-  color: #000;
-  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.3);
+  background: var(--accent-gold);
+  color: #0C0C0E;
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35);
 }
 .play-pause-btn:hover {
-  background: var(--accent-violet-light);
-  color: #fff;
-  box-shadow: 0 4px 16px var(--accent-violet-glow);
+  background: var(--accent-gold-hover);
+  color: #0C0C0E;
+  box-shadow: 0 4px 18px rgba(212, 175, 55, 0.5);
   transform: scale(1.08);
 }
 
-/* Active indicator dot for Shuffle / Repeat */
+/* Active indicator dot for Shuffle / Repeat in Gold */
 .active-dot {
   position: absolute;
   bottom: -6px;
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: var(--accent-violet);
+  background: var(--accent-gold);
   display: none;
 }
 .control-btn.active {
-  color: var(--accent-violet-light);
+  color: var(--accent-gold);
 }
 .control-btn.active .active-dot {
   display: block;
@@ -1543,8 +1652,8 @@ img {
   right: -6px;
   font-size: 0.625rem;
   font-weight: 800;
-  background: var(--accent-violet);
-  color: #fff;
+  background: var(--accent-gold);
+  color: #0C0C0E;
   width: 13px;
   height: 13px;
   border-radius: 50%;
@@ -1556,7 +1665,7 @@ img {
   display: flex;
 }
 
-/* Player Timeline Scrubber */
+/* Player Timeline Scrubber - Gold Filled */
 .player-timeline {
   width: 100%;
   display: flex;
@@ -1566,7 +1675,7 @@ img {
 
 .time-text {
   font-size: 0.725rem;
-  color: var(--text-dim);
+  color: var(--text-muted);
   font-variant-numeric: tabular-nums;
   min-width: 32px;
   text-align: center;
@@ -1576,13 +1685,13 @@ img {
   flex: 1;
   height: 5px;
   border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--border-subtle);
   position: relative;
   cursor: pointer;
   transition: height var(--transition-fast);
 }
 .progress-container:hover {
-  height: 8px;
+  height: 7px;
 }
 
 .progress-buffer {
@@ -1591,7 +1700,7 @@ img {
   left: 0;
   height: 100%;
   border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.12);
   width: 0%;
   pointer-events: none;
 }
@@ -1602,13 +1711,10 @@ img {
   left: 0;
   height: 100%;
   border-radius: var(--radius-full);
-  background: var(--text-main);
+  background: var(--accent-gold);
   width: 0%;
-  transition: background var(--transition-fast);
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
   pointer-events: none;
-}
-.progress-container:hover .progress-bar-fill {
-  background: var(--accent-violet-light);
 }
 
 .progress-handle {
@@ -1619,8 +1725,9 @@ img {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+  background: var(--text-main);
+  border: 1.5px solid var(--accent-gold);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.7);
   pointer-events: none;
   transition: transform var(--transition-fast);
 }
@@ -1649,7 +1756,7 @@ img {
   justify-content: center;
 }
 .volume-btn:hover {
-  color: var(--text-main);
+  color: var(--accent-gold);
 }
 
 .volume-slider-container {
@@ -1664,7 +1771,7 @@ img {
   width: 100%;
   height: 4px;
   border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--border-subtle);
   outline: none;
   cursor: pointer;
   transition: height var(--transition-fast);
@@ -1680,14 +1787,15 @@ img {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: #fff;
+  background: var(--text-main);
+  border: 1.5px solid var(--accent-gold);
   cursor: pointer;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
   transition: transform var(--transition-fast);
 }
 .volume-slider:hover::-webkit-slider-thumb {
   transform: scale(1.15);
-  background: var(--accent-violet-light);
+  background: var(--accent-gold);
 }
 
 /* Firefox thumb */
@@ -1695,22 +1803,22 @@ img {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: #fff;
+  background: var(--text-main);
+  border: 1.5px solid var(--accent-gold);
   cursor: pointer;
-  border: none;
 }
 
 .mobile-playlist-toggle {
   display: none;
 }
 
-/* --- Modals --- */
+/* --- 11. MODALS --- */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 200;
   display: flex;
   align-items: center;
@@ -1728,8 +1836,8 @@ img {
   width: 100%;
   max-width: 500px;
   background: var(--bg-panel);
-  border: 1px solid var(--border-violet);
-  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   overflow: hidden;
   animation: modalSlideUp 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1754,12 +1862,13 @@ img {
   gap: 10px;
 }
 .modal-title-wrap h3 {
+  font-family: var(--font-serif);
   font-size: 1.15rem;
   font-weight: 700;
   color: var(--text-main);
 }
 .modal-icon {
-  font-size: 1.4rem;
+  font-size: 1.3rem;
 }
 
 .modal-close-btn {
@@ -1773,7 +1882,7 @@ img {
   color: var(--text-muted);
 }
 .modal-close-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--bg-card);
   color: var(--text-main);
 }
 
@@ -1788,14 +1897,15 @@ img {
 }
 
 .modal-step-box {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-card);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   padding: 14px 16px;
 }
 .modal-step-box h4 {
-  color: var(--accent-violet-light);
-  font-size: 0.8rem;
+  font-family: var(--font-sans);
+  color: var(--accent-gold);
+  font-size: 0.775rem;
   margin-bottom: 6px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -1808,7 +1918,7 @@ img {
   font-size: 0.825rem;
 }
 .modal-step-box a {
-  color: var(--accent-coral);
+  color: var(--accent-gold);
   text-decoration: underline;
 }
 
@@ -1827,17 +1937,17 @@ img {
   width: 100%;
   height: 44px;
   padding: 0 14px;
-  border-radius: var(--radius-md);
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid var(--border-light);
-  color: #fff;
+  border-radius: var(--radius-sm);
+  background: #0C0C0E;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
   font-family: monospace;
   font-size: 0.9rem;
   outline: none;
 }
 .modal-text-input:focus {
-  border-color: var(--accent-violet);
-  box-shadow: 0 0 12px var(--accent-violet-glow);
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
 }
 
 .modal-hint {
@@ -1847,18 +1957,18 @@ img {
 
 .modal-feedback {
   padding: 10px 12px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-xs);
   font-size: 0.8rem;
 }
 .modal-feedback.success {
-  background: rgba(16, 185, 129, 0.15);
+  background: rgba(16, 185, 129, 0.12);
   border: 1px solid rgba(16, 185, 129, 0.3);
   color: #10B981;
 }
 .modal-feedback.error {
-  background: rgba(255, 107, 107, 0.15);
-  border: 1px solid rgba(255, 107, 107, 0.3);
-  color: var(--accent-coral);
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #EF4444;
 }
 
 .modal-footer {
@@ -1868,7 +1978,7 @@ img {
   justify-content: flex-end;
   gap: 12px;
   border-top: 1px solid var(--border-subtle);
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.25);
 }
 
 /* Shortcuts Modal Grid */
@@ -1882,8 +1992,9 @@ img {
   align-items: center;
   justify-content: space-between;
   padding: 8px 12px;
-  border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-xs);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
 }
 .shortcut-desc {
   font-size: 0.85rem;
@@ -1893,15 +2004,14 @@ img {
   display: inline-block;
   padding: 3px 8px;
   border-radius: var(--radius-xs);
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid var(--border-light);
+  background: #0C0C0E;
+  border: 1px solid var(--border-gold);
   font-family: monospace;
   font-size: 0.75rem;
-  color: var(--accent-violet-light);
-  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.4);
+  color: var(--accent-gold);
 }
 
-/* --- Toast Notifications --- */
+/* --- 12. TOAST NOTIFICATIONS --- */
 .toast-container {
   position: fixed;
   top: 80px;
@@ -1919,10 +2029,9 @@ img {
   align-items: center;
   gap: 10px;
   padding: 12px 18px;
-  border-radius: var(--radius-md);
-  background: rgba(25, 25, 50, 0.95);
-  backdrop-filter: blur(16px);
-  border: 1px solid var(--border-violet);
+  border-radius: var(--radius-sm);
+  background: var(--bg-panel);
+  border: 1px solid var(--border-gold);
   box-shadow: var(--shadow-md);
   color: var(--text-main);
   font-size: 0.825rem;
@@ -1943,7 +2052,7 @@ img {
   to { transform: translateX(0); opacity: 1; }
 }
 
-/* --- Responsive Adjustments --- */
+/* --- 13. RESPONSIVE DESIGN --- */
 @media (max-width: 1024px) {
   :root {
     --sidebar-width: 280px;
@@ -1952,11 +2061,26 @@ img {
     padding: 24px;
   }
   .hero-title {
-    font-size: 1.5rem;
+    font-size: 1.7rem;
   }
   .results-grid {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 14px;
+  }
+  /* Scale disc slightly on intermediate screens */
+  .vinyl-widget {
+    width: 210px;
+    height: 210px;
+    right: 24px;
+    bottom: 104px;
+  }
+  .vinyl-disc {
+    width: 210px;
+    height: 210px;
+  }
+  .vinyl-center-label {
+    width: 86px;
+    height: 86px;
   }
 }
 
@@ -1987,7 +2111,7 @@ img {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.65);
+    background: rgba(0, 0, 0, 0.75);
     backdrop-filter: blur(4px);
     z-index: 140;
   }
@@ -1999,23 +2123,27 @@ img {
     width: 100%;
   }
 
-  /* Shrink floating vinyl disc on mobile */
+  /* Mobile Vinyl Disc: ~140px size as requested */
   .vinyl-widget {
     right: 16px;
-    bottom: 96px;
-    width: 68px;
-    height: 68px;
+    bottom: 98px;
+    width: 140px;
+    height: 140px;
   }
   .vinyl-disc {
-    width: 68px;
-    height: 68px;
+    width: 140px;
+    height: 140px;
   }
   .vinyl-center-label {
-    width: 32px;
-    height: 32px;
+    width: 58px;
+    height: 58px;
   }
   .vinyl-badge {
     display: none;
+  }
+
+  .center-content-wrapper {
+    padding-bottom: 250px;
   }
 
   .welcome-hero-card {
@@ -2054,7 +2182,7 @@ img {
     display: none;
   }
   .center-content-wrapper {
-    padding: 16px 14px 110px 14px;
+    padding: 16px 14px 230px 14px;
   }
   .results-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -2065,5 +2193,21 @@ img {
   }
   .player-controls {
     gap: 12px;
+  }
+}
+
+/* --- 14. PREFERS-REDUCED-MOTION SUPPORT --- */
+@media (prefers-reduced-motion: reduce) {
+  .vinyl-disc,
+  .neon-conic-ring,
+  .neon-blur-core,
+  .wave-bars span {
+    animation: none !important;
+  }
+  .vinyl-widget,
+  .track-card,
+  .card-play-btn,
+  .card-cover {
+    transition: none !important;
   }
 }
